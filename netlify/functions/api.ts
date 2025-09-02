@@ -60,7 +60,7 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID!,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   callbackURL: "/api/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
+}, async (accessToken: any, refreshToken: any, profile: any, done: any) => {
   try {
     const user = {
       id: profile.id,
@@ -271,4 +271,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Export handler for Netlify
-export const handler: Handler = serverless(app);
+export const handler: Handler = async (event, context) => {
+  return await serverless(app)(event, context);
+};

@@ -9,8 +9,8 @@
     "build": "npm run build:client",
     "build:client": "cd client && npm run build",
     "build:firebase": "npm run build:client && cd functions && npm run build",
-    "build:netlify": "npm run build:client && npm run build:netlify-functions",
-    "build:netlify-functions": "cd netlify/functions && npm run build",
+    "build:netlify": "npm run install:client && npm run build:client && npm run build:netlify-functions",
+    "build:netlify-functions": "cd netlify/functions && npm install && npm run build",
     "install:client": "cd client && npm install",
     "install:functions": "cd functions && npm install",
     "install:netlify": "cd netlify/functions && npm install",
@@ -19,21 +19,29 @@
     "install:netlify-all": "npm install && npm run install:client && npm run install:netlify"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "googleapis": "^128.0.0",
-    "google-auth-library": "^9.0.0",
+    "@netlify/functions": "^4.2.5",
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "google-auth-library": "^9.0.0",
+    "googleapis": "^128.0.0",
+    "helmet": "^7.0.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "helmet": "^7.0.0",
-    "compression": "^1.7.4"
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "netlify-cli": "^23.4.3",
     "nodemon": "^3.0.1"
   },
-  "keywords": ["expense-tracker", "family-finances", "google-sheets"],
+  "keywords": [
+    "expense-tracker",
+    "family-finances",
+    "google-sheets"
+  ],
   "author": "Family Expense Tracker",
   "license": "MIT"
 }
