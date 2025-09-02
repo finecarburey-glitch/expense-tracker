@@ -271,6 +271,4 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Export handler for Netlify
-export const handler: Handler = async (event, context) => {
-  return await serverless(app)(event, context);
-};
+export const handler = serverless(app);
