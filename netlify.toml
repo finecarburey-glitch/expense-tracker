@@ -1,35 +1,19 @@
 [build]
   publish = "client/build"
-  command = "npm install && npm run build:netlify"
+  command = "npm run build:client"
 
 [build.environment]
   NODE_VERSION = "18"
-  CI = "false"
 
-# API redirects (must come before catch-all)
+[functions]
+  directory = "netlify/functions"
+
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api-simple"
+  to = "/.netlify/functions/:splat"
   status = 200
 
-# Catch-all redirect (must come last)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-[[headers]]
-  for = "/static/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
