@@ -5,7 +5,7 @@
 Create a `.env` file in your project root with these variables:
 
 ```env
-# Google OAuth Configuration
+# Google OAuth Configugor the ration
 # Get these from Google Cloud Console > APIs & Services > Credentials
 GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here

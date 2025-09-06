@@ -9,14 +9,41 @@ export class GoogleSheetsService {
     this.sheets = google.sheets({ version: 'v4' });
     this.sheetId = process.env.GOOGLE_SHEETS_ID!;
     
-    // Initialize auth
+    // Initialize auth with optimized private key handling
     this.auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        private_key: this.getPrivateKey(),
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
+  }
+
+  private getPrivateKey(): string {
+    // Handle different private key formats
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    
+    // If it's a compact format, restore it
+    if (privateKey.includes('-----BEGINPRIVATEKEY-----')) {
+      return privateKey
+        .replace('-----BEGINPRIVATEKEY-----', '-----BEGIN PRIVATE KEY-----')
+        .replace('-----ENDPRIVATEKEY-----', '-----END PRIVATE KEY-----')
+        .replace(/(.{64})/g, '$1\n')
+        .replace(/\n$/, '');
+    }
+    
+    // If it's already formatted correctly, return as is
+    if (privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      return privateKey.replace(/\\n/g, '\n');
+    }
+    
+    // If it's a base64 encoded key, decode it
+    if (process.env.GOOGLE_PRIVATE_KEY_B64) {
+      return Buffer.from(process.env.GOOGLE_PRIVATE_KEY_B64, 'base64').toString('utf-8');
+    }
+    
+    // Fallback to original method
+    return privateKey.replace(/\\n/g, '\n');
   }
 
   async getAuthClient() {
