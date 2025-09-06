@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { 
   Filter, 
@@ -6,8 +6,6 @@ import {
   Edit, 
   Trash2, 
   Calendar,
-  DollarSign,
-  Tag,
   User
 } from 'lucide-react';
 import axios from 'axios';
@@ -27,11 +25,7 @@ const Expenses = () => {
 
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [filters]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [expensesRes, categoriesRes] = await Promise.all([
         axios.get('/api/expenses', { params: filters }),
@@ -45,7 +39,11 @@ const Expenses = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleFilterChange = (name, value) => {
     setFilters(prev => ({ ...prev, [name]: value }));

@@ -4,8 +4,6 @@ import {
   Edit, 
   Trash2, 
   Tag, 
-  Save, 
-  X,
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';

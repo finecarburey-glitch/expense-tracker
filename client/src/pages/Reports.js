@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { 
   TrendingUp, 
@@ -17,11 +17,7 @@ const Reports = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [chartType, setChartType] = useState('bar'); // 'bar' or 'pie'
 
-  useEffect(() => {
-    fetchReport();
-  }, [selectedMonth, selectedYear]);
-
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       const response = await axios.get('/api/expenses/report/monthly', {
         params: { month: selectedMonth, year: selectedYear }
@@ -32,7 +28,11 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedMonth, selectedYear]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
