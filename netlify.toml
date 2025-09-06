@@ -6,21 +6,13 @@
   NODE_VERSION = "18"
   CI = "false"
 
-[[redirects]]
-  from = "/api/auth/google"
-  to = "/.netlify/functions/api-simple"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/user"
-  to = "/.netlify/functions/api-simple"
-  status = 200
-
+# API redirects (must come before catch-all)
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api-simple"
   status = 200
 
+# Catch-all redirect (must come last)
 [[redirects]]
   from = "/*"
   to = "/index.html"
