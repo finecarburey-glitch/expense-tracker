@@ -8,27 +8,17 @@
 
 [[redirects]]
   from = "/api/auth/google"
-  to = "/.netlify/functions/api"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/google/callback"
-  to = "/.netlify/functions/api"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/logout"
-  to = "/.netlify/functions/api"
+  to = "/.netlify/functions/api-simple"
   status = 200
 
 [[redirects]]
   from = "/api/auth/user"
-  to = "/.netlify/functions/api"
+  to = "/.netlify/functions/api-simple"
   status = 200
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api"
+  to = "/.netlify/functions/api-simple"
   status = 200
 
 [[redirects]]
