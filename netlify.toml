@@ -13,7 +13,28 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Redirect specific routes to index.html (React Router)
 [[redirects]]
-  from = "/*"
+  from = "/dashboard"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/add-expense"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/expenses"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/reports"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/categories"
   to = "/index.html"
   status = 200
