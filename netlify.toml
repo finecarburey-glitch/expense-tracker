@@ -5,36 +5,8 @@
 [build.environment]
   NODE_VERSION = "18"
 
-[functions]
-  directory = "netlify/functions"
-
+# Redirect all routes to index.html for React Router
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Redirect specific routes to index.html (React Router)
-[[redirects]]
-  from = "/dashboard"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/add-expense"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/expenses"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/reports"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/categories"
+  from = "/*"
   to = "/index.html"
   status = 200
