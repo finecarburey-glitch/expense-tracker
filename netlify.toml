@@ -1,11 +1,18 @@
 [build]
   publish = "client/build"
   command = "npm run build:client"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# Redirect all routes to index.html for React Router
+# API routes - these must come before the catch-all redirect
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+# Redirect all other routes to index.html for React Router
 [[redirects]]
   from = "/*"
   to = "/index.html"

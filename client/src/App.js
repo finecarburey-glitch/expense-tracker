@@ -1,26 +1,13 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
 import Expenses from './pages/Expenses';
 import Reports from './pages/Reports';
 import Categories from './pages/Categories';
-import Login from './pages/Login';
-import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />

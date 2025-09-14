@@ -7,13 +7,12 @@ import {
   List, 
   BarChart3, 
   Tag, 
-  LogOut, 
   Menu,
   X
 } from 'lucide-react';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -26,10 +25,6 @@ const Navbar = () => {
   ];
 
   const isActive = (path) => location.pathname === path;
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -67,28 +62,17 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* User Menu */}
+          {/* User Info */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="flex items-center space-x-3">
-              {user?.picture && (
-                <img
-                  src={user.picture}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
-                />
-              )}
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">F</span>
+              </div>
               <div className="text-right">
                 <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                <p className="text-xs text-gray-500">{user?.email}</p>
+                <p className="text-xs text-gray-500">Family Tracker</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Logout</span>
-            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -131,26 +115,15 @@ const Navbar = () => {
               
               {/* Mobile User Info */}
               <div className="px-4 py-3 border-t border-gray-200 mt-4">
-                <div className="flex items-center space-x-3 mb-3">
-                  {user?.picture && (
-                    <img
-                      src={user.picture}
-                      alt={user.name}
-                      className="w-10 h-10 rounded-full"
-                    />
-                  )}
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold">F</span>
+                  </div>
                   <div>
                     <p className="font-medium text-gray-900">{user?.name}</p>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
+                    <p className="text-sm text-gray-500">Family Tracker</p>
                   </div>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
               </div>
             </div>
           </div>

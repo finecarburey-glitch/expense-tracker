@@ -42,8 +42,15 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Amount, date, and category are required' });
     }
     
+    // Use default user since authentication is removed
+    const defaultUser = {
+      id: '1',
+      name: 'Family User',
+      email: 'family@example.com'
+    };
+    
     const expenseData = { amount: parseFloat(amount), date, category, notes };
-    const newExpense = await sheetsService.addExpense(expenseData, req.user);
+    const newExpense = await sheetsService.addExpense(expenseData, defaultUser);
     
     res.status(201).json(newExpense);
   } catch (error) {
@@ -68,7 +75,14 @@ router.put('/:id', async (req, res) => {
       return res.status(400).json({ error: 'No valid fields to update' });
     }
     
-    const result = await sheetsService.updateExpense(id, allowedUpdates, req.user);
+    // Use default user since authentication is removed
+    const defaultUser = {
+      id: '1',
+      name: 'Family User',
+      email: 'family@example.com'
+    };
+    
+    const result = await sheetsService.updateExpense(id, allowedUpdates, defaultUser);
     res.json(result);
   } catch (error) {
     console.error('Error updating expense:', error);

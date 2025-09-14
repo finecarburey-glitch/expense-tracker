@@ -1,0 +1,10 @@
+{
+  "name": "netlify-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for Family Expense Tracker",
+  "main": "index.js",
+  "dependencies": {
+    "googleapis": "^128.0.0",
+    "google-auth-library": "^9.0.0"
+  }
+}
