@@ -163,6 +163,101 @@ async function addCategory(categoryName) {
   return { name: categoryName, isDefault: false, createdAt: now };
 }
 
+async function updateCategory(oldName, newName) {
+  const authClient = await auth.getClient();
+  
+  // First, check if new category name already exists (excluding the current one)
+  const existingCategories = await getCategories();
+  const categoryExists = existingCategories.some(cat => 
+    cat.name.toLowerCase() === newName.toLowerCase() && 
+    cat.name.toLowerCase() !== oldName.toLowerCase()
+  );
+  
+  if (categoryExists) {
+    throw new Error(`Category "${newName}" already exists. Please choose a different name.`);
+  }
+  
+  // Find the row number of the category to update
+  const response = await sheets.spreadsheets.values.get({
+    auth: authClient,
+    spreadsheetId: sheetId,
+    range: 'Categories!A:C',
+  });
+  
+  if (!response.data.values) {
+    throw new Error('Category not found');
+  }
+  
+  const rowIndex = response.data.values.findIndex(row => row[0] === oldName);
+  if (rowIndex === -1) {
+    throw new Error('Category not found');
+  }
+  
+  const rowNumber = rowIndex + 1; // +1 because sheets are 1-indexed
+  const now = new Date().toISOString();
+  
+  // Update the category name
+  await sheets.spreadsheets.values.update({
+    auth: authClient,
+    spreadsheetId: sheetId,
+    range: `Categories!A${rowNumber}:C${rowNumber}`,
+    valueInputOption: 'RAW',
+    resource: { values: [[newName, false, now]] }
+  });
+  
+  return { name: newName, isDefault: false, createdAt: now };
+}
+
+async function deleteCategory(categoryName) {
+  const authClient = await auth.getClient();
+  
+  // Check if category is used in any expenses
+  const expenses = await getExpenses();
+  const categoryInUse = expenses.some(exp => exp.category === categoryName);
+  
+  if (categoryInUse) {
+    throw new Error(`Cannot delete category "${categoryName}" because it is being used by existing expenses.`);
+  }
+  
+  // Find the row number of the category to delete
+  const response = await sheets.spreadsheets.values.get({
+    auth: authClient,
+    spreadsheetId: sheetId,
+    range: 'Categories!A:C',
+  });
+  
+  if (!response.data.values) {
+    throw new Error('Category not found');
+  }
+  
+  const rowIndex = response.data.values.findIndex(row => row[0] === categoryName);
+  if (rowIndex === -1) {
+    throw new Error('Category not found');
+  }
+  
+  const rowNumber = rowIndex + 1; // +1 because sheets are 1-indexed
+  
+  // Delete the row
+  await sheets.spreadsheets.batchUpdate({
+    auth: authClient,
+    spreadsheetId: sheetId,
+    resource: {
+      requests: [{
+        deleteDimension: {
+          range: {
+            sheetId: 0, // Categories sheet
+            dimension: 'ROWS',
+            startIndex: rowNumber - 1,
+            endIndex: rowNumber
+          }
+        }
+      }]
+    }
+  });
+  
+  return { message: `Category "${categoryName}" deleted successfully` };
+}
+
 async function addExpense(expenseData, user) {
   const authClient = await auth.getClient();
   const now = new Date().toISOString();
@@ -361,6 +456,58 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ 
               error: error.message,
               duplicate: true
+            })
+          };
+        }
+      } else if (httpMethod === 'PUT') {
+        const { oldName, newName } = requestBody;
+        if (!oldName || !newName || newName.trim() === '') {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: 'Old name and new name are required' })
+          };
+        }
+        
+        try {
+          const updatedCategory = await updateCategory(oldName.trim(), newName.trim());
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify(updatedCategory)
+          };
+        } catch (error) {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+              error: error.message
+            })
+          };
+        }
+      } else if (httpMethod === 'DELETE') {
+        const { name } = requestBody;
+        if (!name || name.trim() === '') {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: 'Category name is required' })
+          };
+        }
+        
+        try {
+          const result = await deleteCategory(name.trim());
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify(result)
+          };
+        } catch (error) {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ 
+              error: error.message
             })
           };
         }
